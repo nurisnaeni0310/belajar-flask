@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% set title = 'daftar mahasiswa' %}
+{% set page_active ='mahasiswa' %}
+
+{% block _content %}
+<div class="row mt-5">
+    <div class="col-12">
+        <h3>Daftar mahasiswa</h3>
+        <a href="{{ url_for ('tambah_mahasiswa') }}" class="btn btn-success">Tambah Mahasiswa</a>
+    </div>
+    <div class="col-12">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th scope="col">Foto</th>
+                    <th scope="col">Nama lengkap</th>
+                    <th scope="col">Jurusan</th>
+                    <th scope="col">Tanggal lahir</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for mhs in daftar_mahasiswa %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>
+                        <img src="{% if 'photoURL' in mhs %} {{ mhs.photoURL }} {% else %} https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQJxKGGpPc9-5g25KWwnsCCy9O_dlS4HWo5A&usqp=CAU {% endif %}" width="75px" alt="">
+                    </td>
+                    <td>{{ mhs['nama_lengkap']}}</td>
+                    <td>{{ mhs.jurusan}}</td>
+                    <td>{{ mhs.tanggal_lahir}}</td>
+                    <td>
+                        {% if mhs.status == 'Aktif' %}
+                        <span class="badge bg-success">Aktif</span>
+                        {% else %}
+                        <span class="badge bg-danger">Tidak aktif</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="/mahasiswa/{{ mhs.id }}" class="btn btn-primary btn-sm">Lihat</a>
+                        <a href="/mahasiswa/edit/{{ mhs.id }}" class="btn btn-warning btn-sm">Edit</a>
+                        <button="/mahasiswa/hapus/{{ mhs.id }}" class="btn btn-danger btn-sm"
+                            onclick="hapusData('{{ mhs.id }}')">Hapus</button=>
+                    </td>
+                </tr>
+                {% endfor %}
+
+
+            </tbody>
+        </table>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block _script %}
+<script>
+    function hapusData(id) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location = `/mahasiswa/hapus/${id}`
+                Swal.fire(
+                    'Deleted!',
+                    'Your file has been deleted.',
+                    'success'
+                )
+            }
+        })
+    }
+</script>
+{% endblock %}
